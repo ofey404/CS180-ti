@@ -2,6 +2,7 @@
 #include "rasterizer.hpp"
 #include <eigen3/Eigen/Eigen>
 #include <iostream>
+#include <math.h>
 #include <opencv2/opencv.hpp>
 
 constexpr double MY_PI = 3.1415926;
@@ -11,8 +12,10 @@ Eigen::Matrix4f get_view_matrix(Eigen::Vector3f eye_pos)
     Eigen::Matrix4f view = Eigen::Matrix4f::Identity();
 
     Eigen::Matrix4f translate;
-    translate << 1, 0, 0, -eye_pos[0], 0, 1, 0, -eye_pos[1], 0, 0, 1,
-        -eye_pos[2], 0, 0, 0, 1;
+    translate << 1, 0, 0, -eye_pos[0],
+                 0, 1, 0, -eye_pos[1],
+                 0, 0, 1, -eye_pos[2],
+                 0, 0, 0, 1;
 
     view = translate * view;
 
@@ -23,9 +26,14 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
 {
     Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
 
-    // TODO: Implement this function
-    // Create the model matrix for rotating the triangle around the Z axis.
-    // Then return it.
+    Eigen::Matrix4f translate;
+    double phi = rotation_angle / 180 * MY_PI;
+    translate << cos(phi), -sin(phi), 0, 0,
+                 sin(phi), cos(phi),  0, 0,
+                 0,        0,         1, 0,
+                 0,        0,         0, 1;
+
+    model = translate * model;
 
     return model;
 }
@@ -37,9 +45,19 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
 
     Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
 
-    // TODO: Implement this function
-    // Create the projection matrix for the given parameters.
-    // Then return it.
+    Eigen::Matrix4f persp_to_ortho;
+    persp_to_ortho << 1, 0, 0, 0,
+                      0, 1, 0, 0,
+                      0, 0, 1, 0,
+                      0, 0, 0, 1;
+
+    Eigen::Matrix4f ortho;
+    ortho << 1, 0, 0, 0,
+             0, 1, 0, 0,
+             0, 0, 1, 0,
+             0, 0, 0, 1;
+
+    projection = ortho * persp_to_ortho * projection;
 
     return projection;
 }
