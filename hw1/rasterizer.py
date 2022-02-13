@@ -42,3 +42,8 @@ class Rasterizer:
 
     def frame_buffer(self):
         pass
+
+    def __get_next_id(self) -> int:
+        ans = self.__next_id
+        self.__next_id += 1
+        return ans

@@ -20,7 +20,7 @@ gui = ti.GUI("Julia Set", res=shape)
 grayscale_palette = cycle((255, 127, 63, 31, 15, 7, 3, 1))
 grayscale_base = grayscale_palette.__next__()
 
-while True:
+while gui.running:
     if gui.get_event(ti.GUI.PRESS):
         grayscale_base = grayscale_palette.__next__()
         print("get_event, grayscale_base = {}".format(grayscale_base))
